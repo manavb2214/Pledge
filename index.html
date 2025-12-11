@@ -1,0 +1,2553 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Charity Fund — Frontend Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --accent: #06b6d4;
+      --muted: #94a3b8;
+      --glass: rgba(255, 255, 255, 0.03);
+      --success: #10b981;
+      --danger: #ef4444;
+      --text: #e6eef6;
+    }
+
+    body {
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+      background: linear-gradient(180deg, #071025 0%, #051221 100%);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+      margin-bottom: 14px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: var(--accent);
+      color: #012;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button.ghost {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text);
+    }
+
+    input,
+    select,
+    textarea {
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      background: var(--glass);
+      color: var(--text);
+      outline: none;
+    }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 12px;
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .ngo-item {
+      padding: 10px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    ul.donations {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 320px;
+      overflow: auto;
+    }
+
+    ul.donations li {
+      padding: 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      font-size: 13px;
+    }
+
+    #status {
+      padding: 8px;
+      border-radius: 8px;
+      margin-top: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      font-size: 13px;
+    }
+
+    footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width:900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ghost {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #donorModal input {
+      background: var(--glass);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text);
+    }
+
+    /* Hybrid upgrade overrides */
+    :root {
+      --accent-2: #ffb86b;
+      --glass-border: rgba(255, 255, 255, 0.04);
+    }
+
+    .appbar {
+      padding-top: 6px;
+      padding-bottom: 6px;
+    }
+
+    .logo {
+      font-family: Inter, sans-serif;
+    }
+
+    .title {
+      color: var(--text);
+    }
+
+    .card {
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(2, 6, 23, 0.6);
+    }
+
+    button {
+      transition: transform .12s ease, box-shadow .12s ease;
+      border-radius: 12px;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(6, 182, 212, 0.12);
+    }
+
+    .donate-panel {
+      align-items: center;
+    }
+
+    .lottie-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ngo-item {
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      padding: 12px;
+      border-radius: 10px;
+    }
+
+    #donationList li,
+    #ngoDonationList li {
+      background: rgba(255, 255, 255, 0.02);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    #ngoSelect {
+      color: #5c81de;
+    }
+
+    #log div {
+      background: rgba(0, 0, 0, 0.16);
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+    }
+
+    :root {
+      --bg-accent-1: #0f1724;
+      --bg-accent-2: #06122a;
+      --accent-a: #06b6d4;
+      --accent-b: #a78bfa;
+      --accent-c: #ffb86b;
+    }
+
+    /* Animated background gradient */
+    .animated-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -100;
+      background: linear-gradient(120deg, #061022 0%, #071025 25%, #0b2540 50%, #081126 75%);
+      background-size: 300% 300%;
+      animation: bgGradient 18s ease infinite;
+      filter: contrast(1.05) saturate(1.05);
+      pointer-events: none;
+    }
+
+    @keyframes bgGradient {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animated-bg {
+        animation: none;
+      }
+    }
+
+    /* Floating gradient blobs */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(48px) saturate(1.2);
+      opacity: 0.7;
+      mix-blend-mode: screen;
+      pointer-events: none;
+      z-index: -90;
+      transform: translate3d(0, 0, 0);
+      will-change: transform, opacity;
+    }
+
+    .blob--a {
+      width: 420px;
+      height: 420px;
+      left: -80px;
+      top: -60px;
+      background: radial-gradient(circle at 20% 30%, rgba(6, 182, 212, 0.95), rgba(6, 182, 212, 0.12) 40%, transparent 60%);
+      animation: floatA 14s ease-in-out infinite;
+    }
+
+    .blob--b {
+      width: 320px;
+      height: 320px;
+      right: -60px;
+      top: 40px;
+      background: radial-gradient(circle at 70% 40%, rgba(167, 139, 250, 0.9), rgba(167, 139, 250, 0.12) 40%, transparent 60%);
+      animation: floatB 18s ease-in-out infinite;
+    }
+
+    .blob--c {
+      width: 240px;
+      height: 240px;
+      left: 10%;
+      bottom: -80px;
+      background: radial-gradient(circle at 30% 70%, rgba(255, 184, 107, 0.95), rgba(255, 184, 107, 0.08) 40%, transparent 60%);
+      animation: floatC 22s ease-in-out infinite;
+    }
+
+    @keyframes floatA {
+      0% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0.85;
+      }
+
+      50% {
+        transform: translateY(18px) translateX(18px) scale(1.05);
+        opacity: 0.9;
+      }
+
+      100% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0.85;
+      }
+    }
+
+    @keyframes floatB {
+      0% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0.75;
+      }
+
+      50% {
+        transform: translateY(-22px) translateX(-10px) scale(1.06);
+        opacity: 0.82;
+      }
+
+      100% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0.75;
+      }
+    }
+
+    @keyframes floatC {
+      0% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0.7;
+      }
+
+      50% {
+        transform: translateY(26px) translateX(-12px) scale(1.08);
+        opacity: 0.78;
+      }
+
+      100% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0.7;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .blob {
+        animation: none;
+      }
+    }
+
+    /* Dashboard cards */
+    .dashboard {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+      align-items: stretch;
+    }
+
+    @media (max-width:980px) {
+      .dashboard {
+        flex-direction: column;
+      }
+    }
+
+    .dash-card {
+      flex: 1;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      box-shadow: 0 10px 30px rgba(2, 6, 23, 0.45);
+      min-height: 78px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .dash-card .label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .dash-card .value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .dash-card .sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .dash-card.primary {
+      border-left: 4px solid var(--accent);
+    }
+
+    .dash-card.accent {
+      border-left: 4px solid var(--accent-2);
+    }
+
+    #detailedDashboard table th,
+    #detailedDashboard table td {
+      padding: 8px 6px;
+      font-size: 13px;
+    }
+
+    #detailedDashboard table tbody tr:hover {
+      background: rgba(6, 182, 212, 0.03);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Animated gradient background -->
+  <div class="animated-bg" aria-hidden="true"></div>
+  <!-- Floating organic blobs -->
+  <div class="blob blob--a" aria-hidden="true"></div>
+  <div class="blob blob--b" aria-hidden="true"></div>
+  <div class="blob blob--c" aria-hidden="true"></div>
+  <!-- particle canvas container -->
+  <div id="tsparticles-bg" style="position:fixed; inset:0; z-index:-95; pointer-events:none;"></div>
+
+  <div class="wrap">
+    <header class="appbar"
+      style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 0;">
+      <div class="brand" style="display:flex; align-items:center; gap:12px;">
+        <div class="logo"
+          style="width:44px; height:44px; border-radius:10px; background:linear-gradient(135deg,#06b6d4,#ffb86b); display:flex; align-items:center; justify-content:center; color:#031018; font-weight:700; box-shadow:0 6px 18px rgba(2,6,23,0.6);">
+          P</div>
+        <div>
+          <div class="title" style="font-size:18px; font-weight:700;">Pledge</div>
+          <div class="subtitle small" style="font-size:12px; color:#94a3b8; margin-top:2px;">Transparent donations •
+            Blockchain + Off-chain identity</div>
+        </div>
+      </div>
+
+      <div style="text-align:right; display:flex; gap:12px; align-items:center;">
+        <div style="text-align:right">
+          <div class="small">Account</div>
+          <div id="account" class="small">Not connected</div>
+          <div id="network" class="small"></div>
+        </div>
+        <div style="margin-left:12px">
+          <button id="connectBtn">Connect Wallet</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="dashboard">
+      <div class="dash-card primary" id="cardTotalDonated">
+        <div class="label">Total Donated (All)</div>
+        <div class="value" id="totalDonated">-- ETH</div>
+        <div class="sub">Sum of all on-chain donations</div>
+      </div>
+
+      <div class="dash-card" id="cardYourDonated">
+        <div class="label">Your Donations</div>
+        <div class="value" id="yourDonated">-- ETH</div>
+        <div class="sub">Donations made by connected wallet</div>
+      </div>
+
+      <div class="dash-card accent" id="cardNgoCount">
+        <div class="label">NGOs Registered</div>
+        <div class="value" id="ngoCount">--</div>
+        <div class="sub">Active NGOs on contract</div>
+      </div>
+
+      <div class="dash-card" id="cardContractBal">
+        <div class="label">Contract Balance</div>
+        <div class="value" id="contractBalance">-- ETH</div>
+        <div class="sub">ETH held by the contract</div>
+      </div>
+    </div>
+
+    <!-- detailed dashboard section -->
+    <div id="detailedDashboard" class="card" style="margin-top:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h3 style="margin:0">Detailed Dashboard</h3>
+          <div class="small">Role-aware, detailed donation & donor tables</div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <button id="tabOverview" class="ghost">Overview</button>
+          <button id="tabDonor" class="ghost">Donor View</button>
+          <button id="tabNGO" class="ghost">NGO View</button>
+        </div>
+      </div>
+
+      <div id="detailedBody" style="margin-top:12px;">
+        <!-- Overview placeholder -->
+        <div id="tabContentOverview" style="display:none;">
+          <div class="small">Click the dashboard cards above for the summary view.</div>
+        </div>
+
+        <!-- Donor View -->
+        <div id="tabContentDonor" style="display:none;">
+          <h4>Your Donor Profile</h4>
+          <div id="donorProfile" class="small">(Loading...)</div>
+          <h4 style="margin-top:10px;">Your Donations</h4>
+          <table id="donorDonationsTable" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="text-align:left; border-bottom:1px solid rgba(255,255,255,0.06);">
+                <th>Tx Hash</th>
+                <th>NGO</th>
+                <th>Amount (ETH)</th>
+                <th>Note</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="donorDonationsTbody"></tbody>
+          </table>
+
+          <h4 style="margin-top:12px;">All Donors (Wallet & Total Donated)</h4>
+          <table id="allDonorsTable" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="text-align:left; border-bottom:1px solid rgba(255,255,255,0.06);">
+                <th>Wallet</th>
+                <th>Total Donated (ETH)</th>
+              </tr>
+            </thead>
+            <tbody id="allDonorsTbody"></tbody>
+          </table>
+        </div>
+
+        <!-- NGO View -->
+        <div id="tabContentNGO" style="display:none;">
+          <h4>NGO Summary</h4>
+          <div id="ngoSummary" class="small">(Connect as NGO to see this)</div>
+
+          <h4 style="margin-top:10px;">Donors to this NGO</h4>
+          <table id="ngoDonorsTable" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="text-align:left; border-bottom:1px solid rgba(255,255,255,0.06);">
+                <th>Wallet</th>
+                <th>Name</th>
+                <th>Amount (ETH)</th>
+                <th>Note</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="ngoDonorsTbody"></tbody>
+          </table>
+
+          <div style="margin-top:10px;" class="small">Total received: <span id="ngoTotalReceived">-- ETH</span></div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <button id="connectBtn">Connect Wallet</button>
+          <button id="refreshBtn" class="ghost">Refresh Data</button>
+        </div>
+        <div>
+          <span class="small">Contract:</span>
+          <div id="contractAddr" class="small">REPLACE CONTRACT ADDRESS IN JS</div>
+        </div>
+      </div>
+
+      <div id="status" style="margin-top:12px">Status: Idle</div>
+    </div>
+
+    <div class="grid">
+      <div>
+        <div class="card">
+          <h3>NGOs</h3>
+          <div id="ngoList"></div>
+
+          <div style="margin-top:10px">
+            <label>Add NGO (owner only)</label>
+            <input id="newNgoAddr" placeholder="NGO wallet address" style="width:65%" />
+            <input id="newNgoName" placeholder="NGO friendly name" style="width:33%" />
+            <div style="margin-top:8px">
+              <button id="addNgoBtn">Add NGO</button>
+            </div>
+            <div class="small" style="margin-top:6px"></div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <h4>🔍 View Donations for NGO</h4>
+          <input type="number" id="ngoIndexInput" placeholder="Enter NGO Index (e.g. 0)">
+          <button onclick="checkNGODonations()">Show NGO Donations</button>
+        </div>
+
+
+        <div class="card">
+          <h3>Donate</h3>
+          <label for="ngoSelect">Select NGO to donate</label>
+          <select id="ngoSelect" style="width:100%">
+            <option value="">Load NGOs</option>
+          </select>
+          <label style="margin-top:8px">Amount (ETH)</label>
+          <input id="donationAmount" placeholder="e.g., 0.01" />
+          <label style="margin-top:8px">Note (optional)</label>
+          <input id="donationNote" placeholder="Why you're donating" />
+          <div style="margin-top:8px">
+            <button id="donateBtn">Donate</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Donations History</h3>
+          <div style="margin-bottom:8px" class="small">Click Refresh to fetch all past donations recorded on-chain.
+          </div>
+          <button id="refreshDonations">Refresh Donations</button>
+          <ul id="donationList" class="donations"></ul>
+          <h3>🎯 NGO Donations Received</h3>
+          <ul id="ngoDonationList"></ul>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h3>NGO Actions</h3>
+          <div class="small">If your current MetaMask account is a registered NGO, you can withdraw funds here.</div>
+          <div style="margin-top:8px">
+            <button id="withdrawBtn">Withdraw (NGO)</button>
+          </div>
+          <div style="margin-top:12px">
+            <label>Check Contract Balance For NGO Address</label>
+            <input id="checkNgoAddr" placeholder="NGO address" style="width:70%" />
+            <button id="checkBalanceBtn" class="ghost">Check</button>
+            <div id="ngoBalance" class="small" style="margin-top:8px"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Developer (copy ABI & Address)</h3>
+          <div class="small">Replace the two placeholders inside the JS below:</div>
+          <ol class="small">
+            <li>CONTRACT_ADDRESS — your deployed contract address</li>
+            <li>CONTRACT_ABI — paste the ABI JSON array (exactly as copied from Remix)</li>
+          </ol>
+          <div class="small">After replacing, save and reload this page and click Connect Wallet.</div>
+        </div>
+
+        <div class="card">
+          <h3>Logs</h3>
+          <div id="log" class="small" style="max-height:200px; overflow:auto;"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="small">Serve this file with a local HTTP server (e.g., python -m http.server 8000) or use VS Code
+      Live Server. Requires MetaMask.</footer>
+  </div>
+
+  <!-- Donor Details Modal -->
+  <div id="donorModal"
+    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+    <div
+      style="background:#0b1220; color:#e6eef6; padding:18px; border-radius:10px; width:360px; box-shadow:0 8px 30px rgba(0,0,0,0.6);">
+      <h3 style="margin-top:0; margin-bottom:8px;">Tell us about yourself</h3>
+      <div style="font-size:13px; color:#94a3b8; margin-bottom:12px;">We’ll use this to generate a donor record (private
+        info not stored on-chain).</div>
+
+      <label class="small">Wallet Address</label>
+      <input id="donorWallet" readonly
+        style="width:100%; margin-bottom:8px; padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.04); background:rgba(255,255,255,0.02); color:inherit;" />
+
+      <label class="small">Full Name</label>
+      <input id="donorName" placeholder="Your full name"
+        style="width:100%; margin-bottom:8px; padding:8px; border-radius:6px;" />
+
+      <label class="small">City</label>
+      <input id="donorCity" placeholder="City" style="width:100%; margin-bottom:8px; padding:8px; border-radius:6px;" />
+
+      <label class="small">Email (optional)</label>
+      <input id="donorEmail" placeholder="you@example.com"
+        style="width:100%; margin-bottom:12px; padding:8px; border-radius:6px;" />
+
+      <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <button id="donorCancelBtn" class="ghost">Cancel</button>
+        <button id="donorSaveBtn">Save</button>
+      </div>
+      <div id="donorModalStatus" style="font-size:13px; color:#94a3b8; margin-top:8px;"></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+
+  <!-- Firebase App (Core SDK) -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.3.0/firebase-app.min.js"></script> -->
+
+  <!-- Firebase Firestore -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.3.0/firebase-firestore.min.js"></script> -->
+
+
+  <!-- <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js'    
+    import { getFirestore } from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js'
+  </script> -->
+
+  <!-- ✅ Firebase Compat SDK (EASY version) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAzPpPLrZ-r_e7V0aoiMWbClDn-9YvLh_Q",
+      authDomain: "charity-donation-c3e7f.firebaseapp.com",
+      projectId: "charity-donation-c3e7f",
+      storageBucket: "charity-donation-c3e7f.firebasestorage.app",
+      messagingSenderId: "377975394265",
+      appId: "1:377975394265:web:89e5bdafc8cd4c389dd3c8"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    console.log("✅ Firebase initialized successfully!");
+  </script>
+
+
+
+  <script>
+    const DONOR_LS_KEY = "charity_donor_info"; // single canonical key
+
+    const ADMIN_ADDRESSES = [
+      '0xCdE04F003E11E7A1B690a4546EC8692ba9B1C0C8'
+    ];
+    const CONTRACT_ADDRESS = "0xB061Ed074D9d657E97dc0a7c19A4A697EB15b906";
+    const CONTRACT_ABI = [
+      {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "donor",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "internalType": "uint256",
+            "name": "ngoIndex",
+            "type": "uint256"
+          },
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "ngoAddress",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "note",
+            "type": "string"
+          }
+        ],
+        "name": "Donated",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "uint256",
+            "name": "ngoIndex",
+            "type": "uint256"
+          },
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "ngoAddress",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          }
+        ],
+        "name": "NGOAdded",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "internalType": "address",
+            "name": "ngoAddress",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "name": "Withdrawn",
+        "type": "event"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "_addr",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "_name",
+            "type": "string"
+          }
+        ],
+        "name": "addNGO",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "name": "balances",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "ngoIndex",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "note",
+            "type": "string"
+          }
+        ],
+        "name": "donate",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "name": "donations",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "donor",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "ngoIndex",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "note",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "index",
+            "type": "uint256"
+          }
+        ],
+        "name": "getDonation",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "getDonationsCount",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "getNGOCount",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "name": "ngos",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "addr",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "active",
+            "type": "bool"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "name": "withdraw",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
+    ];
+
+
+    // Contract + provider state
+    let provider, signer, contract, userAddress;
+    // role flags (global)
+    let _isNGO = false;
+    let _isOwner = false;
+
+
+    // ------- UI elements
+    const connectBtn = document.getElementById('connectBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const accountSpan = document.getElementById('account');
+    const networkSpan = document.getElementById('network');
+    const statusDiv = document.getElementById('status');
+    const ngoListDiv = document.getElementById('ngoList');
+    const ngoSelect = document.getElementById('ngoSelect');
+    const donateBtn = document.getElementById('donateBtn');
+    const addNgoBtn = document.getElementById('addNgoBtn');
+    const newNgoAddrInput = document.getElementById('newNgoAddr');
+    const newNgoNameInput = document.getElementById('newNgoName');
+    const donationAmountInput = document.getElementById('donationAmount');
+    const donationNoteInput = document.getElementById('donationNote');
+    const donationList = document.getElementById('donationList');
+    const withdrawBtn = document.getElementById('withdrawBtn');
+    const refreshDonationsBtn = document.getElementById('refreshDonations');
+    const checkNgoAddr = document.getElementById('checkNgoAddr');
+    const checkBalanceBtn = document.getElementById('checkBalanceBtn');
+    const ngoBalance = document.getElementById('ngoBalance');
+    const contractAddrSpan = document.getElementById('contractAddr');
+    const logDiv = document.getElementById('log');
+
+
+
+
+    contractAddrSpan.innerText = CONTRACT_ADDRESS;
+
+    function log(msg) {
+      const el = document.createElement('div');
+      el.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      logDiv.prepend(el);
+    }
+
+    function setStatus(s) {
+      statusDiv.innerText = "Status: " + s;
+      log(s);
+    }
+
+    function setDonorLocal(donor) {
+      try {
+        localStorage.setItem(DONOR_LS_KEY, JSON.stringify(donor));
+        console.log("✅ Donor saved locally:", donor);
+      } catch (e) {
+        console.error("Failed to save donor locally", e);
+      }
+    }
+
+    function getDonorLocal() {
+      try {
+        const raw = localStorage.getItem(DONOR_LS_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        console.error("Failed to load donor from localStorage", e);
+        return null;
+      }
+    }
+
+    function checkNGODonations() {
+      const ngoIndex = document.getElementById("ngoIndexInput").value;
+      if (ngoIndex === "") {
+        alert("Please enter a valid NGO index");
+        return;
+      }
+      loadNGODonations(ngoIndex);
+    }
+
+    // Connect MetaMask wallet
+    async function connectWallet() {
+      if (!window.ethereum) {
+        alert("MetaMask not found. Install MetaMask and try again.");
+        return;
+      }
+      provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+      try {
+        await provider.send("eth_requestAccounts", []);
+        signer = provider.getSigner();
+        userAddress = await signer.getAddress();
+
+        // after wallet connected and userAddress obtained
+        let localDonor = getDonorLocal();
+
+        // If local not found or mismatch, try Firestore (cross-device)
+        if ((!localDonor || (localDonor && localDonor.address.toLowerCase() !== userAddress.toLowerCase())) && typeof db !== 'undefined') {
+          try {
+            const docRef = await db.collection('donors').doc(userAddress.toLowerCase()).get();
+            if (docRef && docRef.exists) {
+              const data = docRef.data();
+              const donorFromCloud = {
+                address: (data.address || userAddress).toLowerCase(),
+                name: data.name || '',
+                city: data.city || '',
+                email: data.email || ''
+              };
+              if (typeof setDonorLocal === 'function') setDonorLocal(donorFromCloud);
+              else localStorage.setItem('charity_donor_info', JSON.stringify(donorFromCloud));
+              localDonor = donorFromCloud;
+              console.log("Loaded donor profile from Firestore");
+            } else {
+              console.log("No donor profile found in Firestore for", userAddress);
+            }
+          } catch (e) {
+            console.warn("Failed to read donor from Firestore (continuing):", e);
+          }
+        }
+
+        // If after checking local + cloud we still don't have donor -> show modal
+        if (!localDonor || (localDonor && localDonor.address.toLowerCase() !== userAddress.toLowerCase())) {
+          showDonorModal(userAddress);
+        } else {
+          setStatus("Welcome back, " + (localDonor.name || userAddress));
+        }
+
+        accountSpan.innerText = userAddress;
+        const network = await provider.getNetwork();
+        networkSpan.innerText = `Network: ${network.name} (chainId ${network.chainId})`;
+        contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+        setStatus("Wallet connected");
+        await loadNGOs();
+        await loadDonations();
+        await updateDashboard();
+
+        // Role detection & detailed dashboard auto-load
+        showDetailedTab('overview');
+
+        // Detect if connected account is a registered NGO on the contract
+        let isNGO = false;
+        try {
+          if (contract && typeof contract.getNGOCount === 'function') {
+            const ngoCountBN = await contract.getNGOCount();
+            const ngoCount = parseInt(ngoCountBN.toString ? ngoCountBN.toString() : ngoCountBN) || 0;
+            for (let i = 0; i < ngoCount; i++) {
+              try {
+                const ng = await contract.ngos(i);
+                if (ng && ng[0] && ng[0].toLowerCase() === userAddress.toLowerCase()) {
+                  isNGO = true;
+                  break;
+                }
+              } catch (e) {
+                console.warn('ngos() read error at index', i, e);
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('Failed to detect NGO role', e);
+        }
+
+        // --- owner/admin detection (so deployer/admin can view NGO tab) ---
+        let isOwner = false;
+        try {
+          if (contract && typeof contract.owner === 'function') {
+            const ownerRaw = await contract.owner();
+            // normalize both sides safely
+            let ownerAddr;
+            try { ownerAddr = ethers.utils.getAddress(ownerRaw).toLowerCase(); } catch { ownerAddr = (ownerRaw || '').toLowerCase(); }
+            isOwner = ownerAddr === userAddress.toLowerCase();
+            console.log('owner() ->', ownerAddr, 'connected ->', userAddress.toLowerCase(), 'isOwner=', isOwner);
+          }
+        } catch (e) {
+          console.warn('owner() check failed', e);
+        }
+
+        const normalizedAdminList = (typeof ADMIN_ADDRESSES !== 'undefined' && Array.isArray(ADMIN_ADDRESSES))
+          ? ADMIN_ADDRESSES.map(a => { try { return ethers.utils.getAddress(a).toLowerCase(); } catch { return (a || '').toLowerCase(); } })
+          : [];
+
+        const isAdminWhitelisted = normalizedAdminList.includes(userAddress.toLowerCase());
+
+        // expose flags globally for other handlers
+        window._isNGO = !!isNGO;
+        window._isOwner = !!isOwner || !!isAdminWhitelisted;
+
+        // show/hide NGO tab button
+        const ngoTabBtn = document.getElementById('tabNGO');
+        if (ngoTabBtn) {
+          const showForThisUser = isNGO || isOwner || isAdminWhitelisted;
+          ngoTabBtn.style.display = showForThisUser ? 'inline-block' : 'none';
+        }
+
+        // Auto-open the right view: NGO if owner/admin/ngo else Donor
+        if (isNGO || isOwner || isAdminWhitelisted) {
+          showDetailedTab('ngo');
+          try {
+            if (isOwner || isAdminWhitelisted) {
+              await loadAllDonationsForAdmin();   // admin sees everything
+            } else {
+              await loadNGODashboard(userAddress); // NGO sees its own donations
+            }
+          } catch (e) { console.warn('NGO/admin dashboard load failed', e); }
+        } else {
+          showDetailedTab('donor');
+          try { await loadDonorDashboard(userAddress); } catch (e) { console.warn('loadDonorDashboard failed', e); }
+        }
+        // end role detection
+
+        // Toggle connect button to act as disconnect now
+        connectBtn.innerText = "Disconnect Wallet";
+        connectBtn.onclick = disconnectWallet;
+
+        // Listen for events if ABI includes them (ensure single listener & debounce)
+        try {
+          if (contract && typeof contract.removeAllListeners === 'function') {
+            contract.removeAllListeners("Donated");
+          }
+          if (contract && contract.on) {
+            contract.on("Donated", (donor, ngoIndex, ngoAddr, amount, timestamp, note, ev) => {
+              setStatus("New donation event received");
+              // debounce refresh to avoid duplicate calls
+              clearTimeout(window.__donationReloadTimer);
+              window.__donationReloadTimer = setTimeout(() => {
+                // if the donor who emitted the event is the connected user, reload user donations
+                try {
+                  const emittedDonor = (donor || '').toLowerCase();
+                  if (userAddress && emittedDonor === userAddress.toLowerCase()) {
+                    loadDonations();
+                  }
+                  // always refresh NGO dashboard if current account is NGO or owner
+                  if (window._isNGO) {
+                    loadNGODashboard(userAddress).catch(() => { });
+                  }
+                  // refresh overall lists (safe)
+                  loadNGOs().catch(() => { });
+                } catch (e) {
+                  // fallback: reload donations
+                  loadDonations().catch(() => { });
+                }
+              }, 300);
+            });
+          }
+        } catch (e) {
+          console.warn('Failed to bind Donated event listener', e);
+        }
+      } catch (err) {
+        console.error(err);
+        setStatus("Connection failed: " + (err && err.message));
+      }
+    }
+
+
+    // Disconnect wallet (UI-level disconnect)
+    function disconnectWallet() {
+      try {
+        // Clear local state
+        userAddress = null;
+        contract = null;
+        signer = null;
+
+        // Update UI
+        accountSpan.innerText = "Not connected";
+        networkSpan.innerText = "";
+        setStatus("Wallet disconnected");
+
+        // Restore Connect button behavior + text
+        connectBtn.innerText = "Connect Wallet";
+        connectBtn.onclick = connectWallet;
+
+        // Optionally hide donor modal if open
+        try { document.getElementById('donorModal').style.display = 'none'; } catch (e) { }
+
+        // If you want to clear displayed donations / NGOs until reconnect:
+        donationList.innerHTML = "";
+        ngoListDiv.innerHTML = "";
+        ngoSelect.innerHTML = "";
+        ngoSelect.appendChild(new Option("-- choose NGO --", ""));
+      } catch (e) {
+        console.error("Error during disconnect:", e);
+      }
+    }
+
+    // Utility: show modal
+    function showDonorModal(address) {
+      document.getElementById('donorWallet').value = address || '';
+      // if saved, prefill fields
+      const saved = getDonorLocal();
+      if (saved && saved.address && saved.address.toLowerCase() === (address || '').toLowerCase()) {
+        document.getElementById('donorName').value = saved.name || '';
+        document.getElementById('donorCity').value = saved.city || '';
+        document.getElementById('donorEmail').value = saved.email || '';
+      } else {
+        document.getElementById('donorName').value = '';
+        document.getElementById('donorCity').value = '';
+        document.getElementById('donorEmail').value = '';
+      }
+      document.getElementById('donorModalStatus').innerText = '';
+      document.getElementById('donorModal').style.display = 'flex';
+    }
+
+    // Hide modal
+    function hideDonorModal() {
+      document.getElementById('donorModal').style.display = 'none';
+    }
+
+    // Save donor info locally (so user not asked again)
+    function saveDonorLocal(obj) {
+      localStorage.setItem(DONOR_LS_KEY, JSON.stringify(obj));
+    }
+
+    // Get donor info from local
+    function getDonorLocal() {
+      try {
+        const raw = localStorage.getItem(DONOR_LS_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    }
+
+    // Save donor details to Firestore (collection: donors)
+    // Will be called after successful donation too (we also record tx details separately)
+    async function saveDonorToFirestore(donorObj) {
+      // donorObj: { address, name, city, email }
+      try {
+        await db.collection('donors').doc(donorObj.address.toLowerCase()).set({
+          address: donorObj.address.toLowerCase(),
+          name: donorObj.name || '',
+          city: donorObj.city || '',
+          email: donorObj.email || '',
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+        console.log("Saved donor profile to Firestore");
+        return true;
+      } catch (err) {
+        console.error("Firestore save donor error", err);
+        return false;
+      }
+    }
+
+    // Save donation record to Firestore (collection: donations)
+    async function saveDonationRecordToFirestore(record) {
+      // record: { txHash, donorAddress, ngoAddress, amountEth, note, name, city, email }
+      if (typeof db === 'undefined' || !db) {
+        console.error('Firestore (db) is not initialized');
+        return false;
+      }
+
+      try {
+        console.log('Attempting to save donation record to Firestore:', record);
+
+        // Clean & normalize the record fields to plain JS types
+        const cleaned = {
+          txHash: String(record.txHash || ''),
+          donorAddress: String((record.donorAddress || '').toLowerCase()),
+          ngoAddress: String((record.ngoAddress || '').toLowerCase()),
+          amountEth: String(record.amountEth || '0'),
+          note: record.note ? String(record.note) : '',
+          name: record.name ? String(record.name) : '',
+          city: record.city ? String(record.city) : '',
+          email: record.email ? String(record.email) : '',
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // Primary write
+        const docRef = await db.collection('donations').add(cleaned);
+        console.log('Donation recorded to Firestore, doc id:', docRef.id);
+        return true;
+      } catch (err) {
+        console.error('Firestore save donation error (first attempt):', err);
+
+        // Retry once after a short delay for transient network errors
+        try {
+          await new Promise(res => setTimeout(res, 1000));
+          const docRef2 = await db.collection('donations').add({
+            txHash: String(record.txHash || ''),
+            donorAddress: String((record.donorAddress || '').toLowerCase()),
+            ngoAddress: String((record.ngoAddress || '').toLowerCase()),
+            amountEth: String(record.amountEth || '0'),
+            note: record.note ? String(record.note) : '',
+            name: record.name ? String(record.name) : '',
+            city: record.city ? String(record.city) : '',
+            email: record.email ? String(record.email) : '',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          console.log('Donation recorded to Firestore on retry, doc id:', docRef2.id);
+          return true;
+        } catch (err2) {
+          console.error('Firestore save donation error (retry failed):', err2);
+          return false;
+        }
+      }
+    }
+
+
+    /* Hook modal buttons */
+    document.getElementById('donorCancelBtn').addEventListener('click', () => {
+      hideDonorModal();
+    });
+
+    document.getElementById('donorSaveBtn').addEventListener('click', async () => {
+      const address = (document.getElementById('donorWallet').value || '').trim();
+      const name = (document.getElementById('donorName').value || '').trim();
+      const city = (document.getElementById('donorCity').value || '').trim();
+      const email = (document.getElementById('donorEmail').value || '').trim();
+
+      // basic validation
+      if (!address) {
+        document.getElementById('donorModalStatus').innerText = "Wallet address missing.";
+        return;
+      }
+      if (!name) {
+        document.getElementById('donorModalStatus').innerText = "Please enter your name.";
+        return;
+      }
+
+      document.getElementById('donorModalStatus').innerText = "Saving profile...";
+
+      const donorObj = { address: address.toLowerCase(), name, city, email };
+
+      try {
+        // 1) Save to Firestore if db is available
+        if (typeof db !== 'undefined' && db) {
+          // compat SDK style
+          await db.collection('donors').doc(address.toLowerCase()).set({
+            address: address.toLowerCase(),
+            name,
+            city,
+            email,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+          console.log("Saved donor profile to Firestore");
+        } else {
+          console.warn("Firestore 'db' not available; skipping cloud save.");
+        }
+
+        // 2) Save locally (so next time we won't prompt)
+        if (typeof setDonorLocal === 'function') {
+          setDonorLocal(donorObj);
+        } else {
+          // fallback to localStorage directly
+          try { localStorage.setItem('charity_donor_info', JSON.stringify(donorObj)); } catch (e) { console.warn("localStorage failed", e); }
+        }
+
+        // 3) UI success feedback
+        document.getElementById('donorModalStatus').innerText = "Saved. You can now donate.";
+        alert("Donor data saved successfully!");
+        document.getElementById('donorModal').style.display = 'none';
+        setStatus("Welcome, " + name);
+
+      } catch (err) {
+        console.error("Error saving donor:", err);
+        document.getElementById('donorModalStatus').innerText = "Failed to save. See console.";
+        alert("Failed to save donor data. Check console for details.");
+      }
+    });
+
+    // Load NGOs and populate UI
+    async function loadNGOs() {
+      ngoListDiv.innerHTML = "";
+      ngoSelect.innerHTML = "";
+      ngoSelect.appendChild(new Option("-- choose NGO --", ""));
+      if (!contract) { setStatus("Contract not connected"); return; }
+      try {
+        const count = await contract.getNGOCount();
+        for (let i = 0; i < count; i++) {
+          const ng = await contract.ngos(i);
+          const addr = ng[0];
+          const name = ng[1];
+          const active = ng[2];
+          const div = document.createElement('div');
+          div.className = 'ngo-item';
+          div.innerHTML = `<div><strong>${name}</strong><div class="small">${addr}</div></div><div class="small">${active ? 'active' : 'inactive'}</div>`;
+          ngoListDiv.appendChild(div);
+
+          const opt = document.createElement('option');
+          opt.value = i;
+          opt.text = `${name} (${addr.slice(0, 6)}...${addr.slice(-4)})`;
+          ngoSelect.appendChild(opt);
+        }
+        setStatus(`Loaded ${count} NGOs`);
+      } catch (err) {
+        console.error(err);
+        setStatus("Failed to load NGOs: " + (err && err.message));
+      }
+    }
+
+    // Add NGO (owner only)
+    async function addNGO() {
+      if (!contract) return alert("Connect wallet first");
+      const addr = newNgoAddrInput.value.trim();
+      const name = newNgoNameInput.value.trim();
+      if (!addr || !name) return alert("Provide address and name");
+      try {
+        const tx = await contract.addNGO(addr, name);
+        setStatus("Sent addNGO tx, waiting confirmation...");
+        await tx.wait();
+        setStatus("NGO added");
+        newNgoAddrInput.value = ""; newNgoNameInput.value = "";
+        await loadNGOs();
+      } catch (err) {
+        console.error(err);
+        setStatus("addNGO failed: " + (err && err.message));
+      }
+    }
+
+    // Donate to selected NGO
+    async function donate() {
+      if (!contract) return alert("Connect wallet first");
+      const index = ngoSelect.value;
+      const amountStr = donationAmountInput.value.trim();
+      const note = donationNoteInput.value.trim() || "";
+      if (!index) return alert("Select an NGO");
+      if (!amountStr || isNaN(amountStr) || Number(amountStr) <= 0) return alert("Enter a valid amount");
+
+      try {
+        const value = ethers.utils.parseEther(amountStr);
+        const tx = await contract.donate(index, note, { value: value });
+        setStatus("Donation transaction sent, waiting confirmation...");
+        console.log('Donation tx sent:', tx.hash);
+
+        const receipt = await tx.wait();
+        setStatus("Donation confirmed, tx: " + tx.hash);
+        console.log('Donation confirmed, receipt:', receipt);
+
+        // Build a safe record for Firestore
+        const donorLocal = getDonorLocal() || { name: "", city: "", email: "" };
+
+        // Find NGO address from contract (guarded)
+        let ngoAddr = '';
+        try {
+          const ngo = await contract.ngos(index);
+          ngoAddr = String(ngo && ngo[0] ? ngo[0] : '');
+        } catch (e) {
+          console.warn('Failed to read NGO address on-chain for index', index, e);
+          ngoAddr = '';
+        }
+
+        const record = {
+          txHash: tx.hash,
+          donorAddress: userAddress || '',
+          ngoAddress: ngoAddr || '',
+          amountEth: String(amountStr),
+          note: note,
+          name: donorLocal.name || "",
+          city: donorLocal.city || "",
+          email: donorLocal.email || ""
+        };
+
+        console.log('Prepared donation record for Firestore:', record);
+
+        const saved = await saveDonationRecordToFirestore(record);
+        if (saved) {
+          setStatus("Donation recorded in Firestore");
+        } else {
+          // Inform user and log prominently
+          setStatus("Donation confirmed on-chain but failed to record in Firestore (check console).");
+          console.warn('Donation saved on-chain but Firestore write failed for tx:', tx.hash);
+        }
+
+        // UI refreshes
+        donationAmountInput.value = "";
+        donationNoteInput.value = "";
+        await loadDonations();
+        await loadNGOs();
+        await updateDashboard();
+      } catch (err) {
+        console.error('Donation failed:', err);
+        setStatus("Donation failed: " + (err && err.message));
+      }
+    }
+
+    // Load donations
+    let _loadingDonations = false; // place near top of script (global)
+
+    async function loadDonations() {
+      if (_loadingDonations) return;   // prevent re-entry
+      _loadingDonations = true;
+      donationList.innerHTML = "";
+      if (!contract || !userAddress) { _loadingDonations = false; return; }
+
+      try {
+        const count = await contract.getDonationsCount();
+        let personalCount = 0; // to track how many this donor made
+
+        for (let i = 0; i < count; i++) {
+          const d = await contract.getDonation(i);
+          const donor = d[0];
+          const amount = ethers.utils.formatEther(d[1]);
+          const ts = d[2];
+          const ngoIndex = d[3];
+          const note = d[4];
+
+          // Show only donations made by the connected wallet
+          if (donor.toLowerCase() === userAddress.toLowerCase()) {
+            personalCount++;
+            const li = document.createElement("li");
+            li.innerText = `#${i} | donor: ${donor} | amount: ${amount} ETH | NGO Index: ${ngoIndex} | time: ${new Date(
+              ts * 1000
+            ).toLocaleString()} | note: ${note}`;
+            donationList.appendChild(li);
+          }
+        }
+
+        // Update status message based on results
+        if (personalCount > 0) {
+          setStatus(`Loaded your donations: ${personalCount}`);
+        } else {
+          setStatus("You have not made any donations yet.");
+          const li = document.createElement("li");
+          li.innerText = "No donations found for this wallet.";
+          donationList.appendChild(li);
+        }
+      } catch (err) {
+        console.error(err);
+        setStatus("Failed loading donations: " + (err && err.message));
+      } finally {
+        _loadingDonations = false;
+      }
+    }
+
+    // Helper fnc - parse BigNumber to ETH string with 4 decimal places
+    function bnToEthStr(bn) {
+      try {
+        return ethers.utils.formatEther(bn || 0);
+      } catch (e) { return "0"; }
+    }
+
+    // Sum on-chain donations
+    async function computeDonationsTotals() {
+      if (!contract) return { total: "0", byUser: "0" };
+      try {
+        const countBN = await contract.getDonationsCount();
+        const count = parseInt(countBN.toString ? countBN.toString() : countBN);
+        let totalWei = ethers.BigNumber.from(0);
+        let yourWei = ethers.BigNumber.from(0);
+        for (let i = 0; i < count; i++) {
+          const d = await contract.getDonation(i);
+          const donor = d[0];
+          const amount = ethers.BigNumber.from(d[1].toString ? d[1].toString() : d[1]);
+          totalWei = totalWei.add(amount);
+          if (userAddress && donor.toLowerCase() === userAddress.toLowerCase()) {
+            yourWei = yourWei.add(amount);
+          }
+        }
+        return { total: ethers.utils.formatEther(totalWei), byUser: ethers.utils.formatEther(yourWei), count };
+      } catch (err) {
+        console.error("computeDonationsTotals error", err);
+        return { total: "0", byUser: "0", count: 0 };
+      }
+    }
+
+    async function updateDashboard() {
+      const totalEl = document.getElementById("totalDonated");
+      const yourEl = document.getElementById("yourDonated");
+      const ngoEl = document.getElementById("ngoCount");
+      const balEl = document.getElementById("contractBalance");
+
+      try {
+        if (totalEl) totalEl.innerText = "Loading...";
+        if (yourEl) yourEl.innerText = "Loading...";
+        if (ngoEl) ngoEl.innerText = "--";
+        if (balEl) balEl.innerText = "-- ETH";
+
+        let ngoCount = 0;
+        if (contract) {
+          const n = await contract.getNGOCount();
+          ngoCount = parseInt(n.toString ? n.toString() : n);
+        }
+        if (ngoEl) ngoEl.innerText = ngoCount;
+
+        const totals = await computeDonationsTotals();
+        if (totalEl) totalEl.innerText = Number(totals.total).toFixed(4) + " ETH";
+        if (yourEl) yourEl.innerText = Number(totals.byUser).toFixed(4) + " ETH";
+
+        if (provider) {
+          try {
+            const bal = await provider.getBalance(CONTRACT_ADDRESS);
+            if (balEl) balEl.innerText = Number(ethers.utils.formatEther(bal)).toFixed(4) + " ETH";
+          } catch (err) {
+            console.error("Failed reading contract balance", err);
+          }
+        }
+      } catch (err) {
+        console.error("updateDashboard error", err);
+      }
+    }
+
+
+
+
+    async function loadNGODonations(selectedNGOIndex) {
+      const ngoDonationList = document.getElementById("ngoDonationList");
+      ngoDonationList.innerHTML = "";
+      if (!contract) return;
+
+      try {
+        const count = await contract.getDonationsCount();
+        let receivedCount = 0;
+
+        for (let i = 0; i < count; i++) {
+          const d = await contract.getDonation(i);
+          const donor = d[0];
+          const amount = ethers.utils.formatEther(d[1]);
+          const ts = d[2];
+          const ngoIndex = d[3];
+          const note = d[4];
+
+          // Only show donations for selected NGO index
+          if (parseInt(ngoIndex) === parseInt(selectedNGOIndex)) {
+            receivedCount++;
+            const li = document.createElement("li");
+            li.innerText = `#${i} | donor: ${donor} | amount: ${amount} ETH | time: ${new Date(
+              ts * 1000
+            ).toLocaleString()} | note: ${note}`;
+            ngoDonationList.appendChild(li);
+          }
+        }
+
+        if (receivedCount === 0) {
+          const li = document.createElement("li");
+          li.innerText = "No donations received for this NGO yet.";
+          ngoDonationList.appendChild(li);
+        }
+
+        setStatus(`Loaded ${receivedCount} donations for NGO index ${selectedNGOIndex}`);
+      } catch (err) {
+        console.error(err);
+        setStatus("Failed loading NGO donations: " + (err && err.message));
+      }
+    }
+
+
+    /* Detailed Dashboard */
+
+    // Tab wiring
+    document.getElementById('tabOverview').addEventListener('click', async () => {
+      showDetailedTab('overview');
+    });
+
+    document.getElementById('tabDonor').addEventListener('click', async () => {
+      showDetailedTab('donor');
+      if (typeof userAddress !== 'undefined' && userAddress) {
+        try { await loadDonorDashboard(userAddress); } catch (e) { console.error('Error loading donor dashboard', e); }
+      }
+    });
+
+    const tabNGOBtn = document.getElementById('tabNGO');
+    if (tabNGOBtn) {
+      tabNGOBtn.addEventListener('click', async (ev) => {
+        ev && ev.preventDefault && ev.preventDefault();
+        if (!userAddress || !contract) {
+          alert("Please connect your wallet first to access NGO View.");
+          return;
+        }
+
+        tabNGOBtn.disabled = true;
+        tabNGOBtn.style.opacity = '0.6';
+
+        try {
+          let addr;
+          try {
+            addr = ethers.utils.getAddress(userAddress).toLowerCase();
+          } catch (e) {
+            addr = (userAddress || '').toLowerCase();
+          }
+
+          // 1) Try owner() check (normalize)
+          let isOwner = false;
+          try {
+            if (typeof contract.owner === 'function') {
+              const ownerRaw = await contract.owner();
+              if (ownerRaw) {
+                let ownerAddr;
+                try {
+                  ownerAddr = ethers.utils.getAddress(ownerRaw).toLowerCase();
+                } catch (ee) {
+                  ownerAddr = (ownerRaw || '').toLowerCase();
+                }
+                isOwner = (ownerAddr === addr);
+                console.log('owner() returned', ownerAddr, 'connected', addr, 'isOwner=', isOwner);
+              }
+            }
+          } catch (e) {
+            console.warn('owner() read failed (will try whitelist):', e);
+          }
+
+          // 2) Check whitelist fallback if owner() was unavailable or false
+          let isAdminWhitelisted = false;
+          try {
+            if (!isOwner && Array.isArray(ADMIN_ADDRESSES) && ADMIN_ADDRESSES.length > 0) {
+              const normalizedList = ADMIN_ADDRESSES.map(a => {
+                try { return ethers.utils.getAddress(a).toLowerCase(); } catch (e) { return (a || '').toLowerCase(); }
+              });
+              isAdminWhitelisted = normalizedList.includes(addr);
+              if (isAdminWhitelisted) console.log('Admin whitelist matched for', addr);
+            }
+          } catch (e) {
+            console.warn('Admin whitelist check error', e);
+          }
+
+          // 3) Check registered NGOs (iterate)
+          let isNGO = false;
+          try {
+            if (typeof contract.getNGOCount === 'function') {
+              const countBN = await contract.getNGOCount();
+              const count = parseInt(countBN.toString ? countBN.toString() : countBN) || 0;
+              for (let i = 0; i < count; i++) {
+                try {
+                  const ng = await contract.ngos(i);
+                  if (ng && ng[0]) {
+                    let ngoAddr;
+                    try { ngoAddr = ethers.utils.getAddress(ng[0]).toLowerCase(); } catch (ee) { ngoAddr = (ng[0] || '').toLowerCase(); }
+                    if (ngoAddr === addr) { isNGO = true; break; }
+                  }
+                } catch (ee) {
+                  console.warn('ngos() read error at index', i, ee);
+                }
+              }
+            }
+          } catch (e) {
+            console.warn('NGO detection failed', e);
+          }
+
+          // Final allow check: owner OR admin-whitelist OR NGO
+          const allowed = isOwner || isAdminWhitelisted || isNGO;
+          console.log('NGO view access check => isOwner:', isOwner, 'isAdminWhitelisted:', isAdminWhitelisted, 'isNGO:', isNGO);
+
+          if (!allowed) {
+            alert("Access denied: NGO view available only to registered NGOs or admin.");
+            return;
+          }
+
+          // Passed validation — show the tab and load dashboard
+          window._isNGO = !!isNGO;
+          window._isOwner = !!isOwner || !!isAdminWhitelisted;
+
+          showDetailedTab('ngo');
+          try {
+            await loadNGODashboard(userAddress);
+          } catch (loadErr) {
+            console.warn('loadNGODashboard failed after validation', loadErr);
+            alert('Failed to load NGO data. Check console for details.');
+          }
+        } finally {
+          // re-enable the button
+          tabNGOBtn.disabled = false;
+          tabNGOBtn.style.opacity = '';
+        }
+      });
+    }
+
+
+    function showDetailedTab(name) {
+      document.getElementById('tabContentOverview').style.display = name === 'overview' ? 'block' : 'none';
+      document.getElementById('tabContentDonor').style.display = name === 'donor' ? 'block' : 'none';
+      document.getElementById('tabContentNGO').style.display = name === 'ngo' ? 'block' : 'none';
+    }
+
+    // Load donor-specific dashboard (call after connect)
+    async function loadDonorDashboard(address) {
+      try {
+        // 1) profile
+        let profile = null;
+        try {
+          const doc = await db.collection('donors').doc(address.toLowerCase()).get();
+          if (doc && doc.exists) profile = doc.data();
+        } catch (e) { console.warn('Firestore donor read failed', e); }
+
+        const profDiv = document.getElementById('donorProfile');
+        profDiv.innerText = profile ? `Name: ${profile.name || '-'} | City: ${profile.city || '-'} | Email: ${profile.email || '-'} | Wallet: ${address}` :
+          `Wallet: ${address} (no profile found)`;
+
+        // 2) donor's donations (from Firestore)
+        // On-chain donor donations (replace Firestore section)
+        const tbody = document.getElementById('donorDonationsTbody');
+        tbody.innerHTML = '';
+
+        try {
+          // get total donations count on-chain
+          const totalBN = await contract.getDonationsCount();
+          const total = parseInt(totalBN.toString ? totalBN.toString() : totalBN) || 0;
+          let found = 0;
+
+          for (let i = 0; i < total; i++) {
+            try {
+              const d = await contract.getDonation(i);
+              const donorAddr = (d[0] || '').toLowerCase();
+              if (donorAddr === address.toLowerCase()) {
+                found++;
+                const amountEth = ethers.utils.formatEther(d[1]);
+                const ts = d[2] ? parseInt(d[2].toString ? d[2].toString() : d[2]) : 0;
+                const ngoIndex = d[3] ? parseInt(d[3].toString ? d[3].toString() : d[3]) : '';
+                const note = d[4] || '';
+                let ngoLabel = `#${ngoIndex}`;
+                try {
+                  const ng = await contract.ngos(ngoIndex);
+                  ngoLabel = `${ng[1] || 'NGO'} (${ng[0].slice(0, 6)}...${ng[0].slice(-4)})`;
+                } catch (e) { /* ignore */ }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+          <td style="word-break:break-all;">${'onchain' /* no tx hash here; use event/API to get txHash */}</td>
+          <td>${ngoLabel}</td>
+          <td>${Number(amountEth).toFixed(6)}</td>
+          <td>${note}</td>
+          <td>${ts ? new Date(ts * 1000).toLocaleString() : ''}</td>
+        `;
+                tbody.appendChild(tr);
+              }
+            } catch (e) {
+              console.warn('getDonation() read error at index', i, e);
+            }
+          }
+
+          if (found === 0) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td colspan="5">No on-chain donations found for this wallet.</td>`;
+            tbody.appendChild(tr);
+          }
+        } catch (err) {
+          console.error('Failed to load on-chain donations', err);
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td colspan="5">Error loading donations (see console).</td>`;
+          tbody.appendChild(tr);
+        }
+        // end on-chain section
+
+
+        // 3) all donors list
+        const donorsTbody = document.getElementById('allDonorsTbody');
+        donorsTbody.innerHTML = '';
+
+        try {
+          // Aggregate totals per donorAddress from Firestore donations collection
+          const snapshot = await db.collection('donations').get();
+          const totals = {}; // { walletLower: totalFloat }
+
+          snapshot.forEach(doc => {
+            const d = doc.data();
+            if (!d || !d.donorAddress) return;
+            const addr = (d.donorAddress || '').toLowerCase();
+            const amt = parseFloat(d.amountEth) || 0;
+            if (!addr) return;
+            totals[addr] = (totals[addr] || 0) + amt;
+          });
+
+          // Convert the totals object to an array and sort (largest donors first)
+          const rows = Object.keys(totals).map(addr => ({ addr, total: totals[addr] }));
+          rows.sort((a, b) => b.total - a.total);
+
+          if (rows.length === 0) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td colspan="2">No donor donation records found.</td>`;
+            donorsTbody.appendChild(tr);
+          } else {
+            for (const r of rows) {
+              // create a row with a copy button for the wallet and a formatted total
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+        <td style="word-break:break-all;">
+          <span style="font-family:monospace;">${shortenAddress(r.addr)}</span>
+          &nbsp;<button class="ghost" style="margin-left:8px; padding:4px 6px; font-size:12px;" onclick="navigator.clipboard.writeText('${r.addr}').then(()=>alert('Copied'));">Copy</button>
+        </td>
+        <td>${Number(r.total).toFixed(6)}</td>
+      `;
+              donorsTbody.appendChild(tr);
+            }
+          }
+        } catch (err) {
+          console.error('Failed to build All Donors totals', err);
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td colspan="2">Error loading donors (see console)</td>`;
+          donorsTbody.appendChild(tr);
+        }
+        //end aggregation block
+
+
+      } catch (err) {
+        console.error('loadDonorDashboard error', err);
+      }
+    }
+
+    // Load NGO-specific dashboard (call after connect)
+    // helper to prevent XSS when inserting free text
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text).replace(/[&<>"'`=\/]/g, function (s) {
+        return ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '/': '&#x2F;', '`': '&#x60;', '=': '&#x3D;'
+        })[s];
+      });
+    }
+
+    async function loadNGODashboard(address) {
+      const summaryDiv = document.getElementById('ngoSummary');
+      const tbody = document.getElementById('ngoDonorsTbody');
+      const totalSpan = document.getElementById('ngoTotalReceived');
+
+      // Clear UI
+      if (tbody) tbody.innerHTML = '';
+      if (totalSpan) totalSpan.innerText = '-- ETH';
+      if (!address) {
+        if (summaryDiv) summaryDiv.innerText = 'No NGO address provided.';
+        return;
+      }
+
+      try {
+        // Attempt to fetch NGO index & name from contract (for nicer label)
+        let ngoIndex = null;
+        let ngoName = null;
+        try {
+          if (contract) {
+            const countBN = await contract.getNGOCount();
+            const count = parseInt(countBN.toString ? countBN.toString() : countBN) || 0;
+            for (let i = 0; i < count; i++) {
+              try {
+                const ng = await contract.ngos(i);
+                const addr = (ng && ng[0]) ? ng[0].toLowerCase() : '';
+                if (addr === address.toLowerCase()) { ngoIndex = i; ngoName = ng[1] || null; break; }
+              } catch (e) {
+                // continue on per-index read errors
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('NGO index read failed', e);
+        }
+
+        if (summaryDiv) summaryDiv.innerText = `NGO Wallet: ${address}` + (ngoName ? ` | Name: ${ngoName}` : '');
+
+        // Try Firestore query first (faster)
+        let foundAny = false;
+        let total = 0;
+
+        if (typeof db !== 'undefined' && db) {
+          try {
+            const q = await db.collection('donations')
+              .where('ngoAddress', '==', address.toLowerCase())
+              .orderBy('timestamp', 'desc')
+              .get();
+
+            if (q && !q.empty) {
+              q.forEach(doc => {
+                const d = doc.data() || {};
+                const donorAddr = d.donorAddress || '';
+                const donorName = d.name || '';
+                const amount = parseFloat(d.amountEth || 0) || 0;
+                const note = d.note || '';
+                let tsStr = '';
+                if (d.timestamp) {
+                  // Firestore Timestamp object or ISO string
+                  if (d.timestamp.seconds) tsStr = new Date(d.timestamp.seconds * 1000).toLocaleString();
+                  else tsStr = new Date(d.timestamp).toLocaleString();
+                }
+                total += amount;
+                foundAny = true;
+
+                if (tbody) {
+                  const tr = document.createElement('tr');
+                  tr.innerHTML = `
+                <td style="word-break:break-all;">${escapeHtml(donorAddr)}</td>
+                <td>${escapeHtml(donorName)}</td>
+                <td>${Number(amount).toFixed(6)}</td>
+                <td>${escapeHtml(note)}</td>
+                <td>${escapeHtml(tsStr)}</td>
+              `;
+                  tbody.appendChild(tr);
+                }
+              });
+            }
+          } catch (fsErr) {
+            console.warn('Firestore query failed (continuing to on-chain fallback):', fsErr);
+          }
+        }
+
+        // If Firestore had no results, fallback to scanning on-chain donations
+        if (!foundAny) {
+          if (!contract) {
+            // Nothing more we can do
+            if (tbody) {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `<td colspan="5">No on-chain or Firestore donations found (contract not available).</td>`;
+              tbody.appendChild(tr);
+            }
+            if (totalSpan) totalSpan.innerText = Number(total).toFixed(6) + ' ETH';
+            return;
+          }
+
+          const ngoMap = {};
+          try {
+            const ngoCountBN = await contract.getNGOCount();
+            const ngoCount = parseInt(ngoCountBN.toString ? ngoCountBN.toString() : ngoCountBN) || 0;
+            for (let i = 0; i < ngoCount; i++) {
+              try {
+                const ng = await contract.ngos(i);
+                ngoMap[i] = { addr: (ng && ng[0]) ? ng[0].toLowerCase() : '', name: (ng && ng[1]) ? ng[1] : '' };
+              } catch (e) {
+                // ignore single read error
+              }
+            }
+          } catch (e) {
+            console.warn('Failed to build NGO map', e);
+          }
+
+          try {
+            const countBN = await contract.getDonationsCount();
+            const count = parseInt(countBN.toString ? countBN.toString() : countBN) || 0;
+            let found = 0;
+
+            for (let i = 0; i < count; i++) {
+              try {
+                const d = await contract.getDonation(i);
+                const donorAddr = (d[0] || '').toLowerCase();
+                const amountEth = ethers.utils.formatEther(d[1] || '0');
+                const ts = d[2] ? parseInt(d[2].toString ? d[2].toString() : d[2]) : 0;
+                const ngoIdx = (typeof d[3] !== 'undefined') ? parseInt(d[3].toString ? d[3].toString() : d[3]) : null;
+                const note = d[4] || '';
+
+                let matched = false;
+                if (ngoIdx !== null && ngoMap[ngoIdx] && ngoMap[ngoIdx].addr === address.toLowerCase()) matched = true;
+
+                if (!matched && ngoIdx !== null) {
+                  try {
+                    const ng = await contract.ngos(ngoIdx);
+                    if (ng && ng[0] && ng[0].toLowerCase() === address.toLowerCase()) matched = true;
+                  } catch (e) { /* ignore per-index read error */ }
+                }
+
+                if (matched) {
+                  found++;
+                  const amountNum = parseFloat(amountEth) || 0;
+                  total += amountNum;
+                  if (tbody) {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                  <td style="word-break:break-all;">${escapeHtml(donorAddr)}</td>
+                  <td></td>
+                  <td>${Number(amountNum).toFixed(6)}</td>
+                  <td>${escapeHtml(note)}</td>
+                  <td>${ts ? new Date(ts * 1000).toLocaleString() : ''}</td>
+                `;
+                    tbody.appendChild(tr);
+                  }
+                }
+              } catch (e) {
+                // ignore single donation read errors
+                console.warn('getDonation() read error at index', i, e);
+              }
+            }
+
+            if (!found && tbody) {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `<td colspan="5">No donations found for this NGO.</td>`;
+              tbody.appendChild(tr);
+            }
+          } catch (chainErr) {
+            console.error('Failed scanning on-chain donations', chainErr);
+            if (tbody) {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `<td colspan="5">Error loading on-chain donations (see console).</td>`;
+              tbody.appendChild(tr);
+            }
+          }
+        }
+
+        if (totalSpan) totalSpan.innerText = Number(total).toFixed(6) + ' ETH';
+        if (summaryDiv) summaryDiv.innerText = `NGO Wallet: ${address}` + (ngoName ? ` | Name: ${ngoName}` : '') + ` (loaded donations)`;
+      } catch (err) {
+        console.error('loadNGODashboard error', err);
+        if (summaryDiv) summaryDiv.innerText = `NGO Wallet: ${address} (failed to load donors)`;
+        if (tbody) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td colspan="5">Error loading donations (see console).</td>`;
+          tbody.appendChild(tr);
+        }
+        if (totalSpan) totalSpan.innerText = '-- ETH';
+      }
+    }
+
+    // Admin: load all donations across all NGOs (Firestore preferred, on-chain fallback)
+    async function loadAllDonationsForAdmin() {
+      const summaryDiv = document.getElementById('ngoSummary');
+      const tbody = document.getElementById('ngoDonorsTbody');
+      const totalEl = document.getElementById('ngoTotalReceived');
+      if (!summaryDiv || !tbody || !totalEl) {
+        console.warn('Admin dashboard DOM elements missing');
+        return;
+      }
+      tbody.innerHTML = '';
+      totalEl.innerText = '-- ETH';
+      summaryDiv.innerText = 'Admin: Loading all donations...';
+
+      try {
+        // ---------- 1) Try Firestore first ----------
+        let usedFirestore = false;
+        let grandTotal = 0;
+        if (typeof db !== 'undefined' && db) {
+          try {
+            // get all donations, newest first
+            const q = await db.collection('donations').orderBy('timestamp', 'desc').get();
+            if (q && !q.empty) {
+              usedFirestore = true;
+              // Group by NGO address
+              const byNGO = {};
+              q.forEach(doc => {
+                const d = doc.data() || {};
+                const ngo = (d.ngoAddress || '').toLowerCase() || 'unknown';
+                byNGO[ngo] = byNGO[ngo] || [];
+                byNGO[ngo].push({ id: doc.id, data: d });
+              });
+
+              // Render grouping
+              const ngoKeys = Object.keys(byNGO);
+              if (ngoKeys.length === 0) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="6">No donations found.</td>`;
+                tbody.appendChild(tr);
+                totalEl.innerText = '0.000000 ETH';
+                summaryDiv.innerText = 'Admin: No donations found';
+                return;
+              }
+
+              grandTotal = 0;
+              for (const ngoAddr of ngoKeys) {
+                const donations = byNGO[ngoAddr];
+                // compute NGO total
+                let ngoTotal = 0;
+                donations.forEach(item => {
+                  const amt = Number(item.data.amountEth || 0) || 0;
+                  ngoTotal += amt;
+                });
+                grandTotal += ngoTotal;
+
+                // NGO group header
+                const headerTr = document.createElement('tr');
+                headerTr.style.background = 'rgba(255,255,255,0.02)';
+                headerTr.innerHTML = `<td colspan="6" style="padding:8px;"><strong>NGO: ${escapeHtml(ngoAddr)}</strong> — Total: ${Number(ngoTotal).toFixed(6)} ETH</td>`;
+                tbody.appendChild(headerTr);
+
+                // donation rows
+                for (const item of donations) {
+                  const d = item.data;
+                  const donorAddr = d.donorAddress || '';
+                  const donorName = d.name || '';
+                  const amount = Number(d.amountEth || 0) || 0;
+                  const note = d.note || '';
+                  let tsStr = '';
+                  if (d.timestamp) {
+                    if (d.timestamp.seconds) tsStr = new Date(d.timestamp.seconds * 1000).toLocaleString();
+                    else tsStr = new Date(d.timestamp).toLocaleString();
+                  }
+                  const tr = document.createElement('tr');
+                  tr.innerHTML = `<td style="word-break:break-all;">${escapeHtml(ngoAddr)}</td>
+                              <td style="word-break:break-all;">${escapeHtml(donorAddr)}</td>
+                              <td>${escapeHtml(donorName)}</td>
+                              <td>${Number(amount).toFixed(6)}</td>
+                              <td>${escapeHtml(note)}</td>
+                              <td>${escapeHtml(tsStr)}</td>`;
+                  tbody.appendChild(tr);
+                }
+              }
+
+              totalEl.innerText = Number(grandTotal).toFixed(6) + ' ETH';
+              summaryDiv.innerText = `Admin: All donations across ${ngoKeys.length} NGO(s) — Grand total: ${Number(grandTotal).toFixed(6)} ETH`;
+              return;
+            }
+          } catch (fsErr) {
+            console.warn('Admin Firestore read failed, will fallback to on-chain:', fsErr);
+          }
+        }
+
+        // Fallback to on-chain scan (slower)
+        const ngoMap = {};
+        try {
+          if (contract && typeof contract.getNGOCount === 'function') {
+            const ngoCountBN = await contract.getNGOCount();
+            const ngoCount = parseInt(ngoCountBN.toString ? ngoCountBN.toString() : ngoCountBN) || 0;
+            for (let i = 0; i < ngoCount; i++) {
+              try {
+                const ng = await contract.ngos(i);
+                ngoMap[i] = { addr: (ng[0] || '').toLowerCase(), name: ng[1] || '' };
+              } catch (e) { /* ignore single index errors */ }
+            }
+          }
+        } catch (e) {
+          console.warn('Failed building NGO map', e);
+        }
+
+        let count = 0;
+        try {
+          if (contract && typeof contract.getDonationsCount === 'function') {
+            const countBN = await contract.getDonationsCount();
+            count = parseInt(countBN.toString ? countBN.toString() : countBN) || 0;
+          }
+        } catch (e) {
+          console.warn('Failed to read donations count on-chain', e);
+        }
+
+        if (!count) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td colspan="6">No on-chain donations found.</td>`;
+          tbody.appendChild(tr);
+          totalEl.innerText = '0.000000 ETH';
+          summaryDiv.innerText = 'Admin: No on-chain donations found';
+          return;
+        }
+
+        const byNGO = {};
+        let grand = 0;
+        for (let i = 0; i < count; i++) {
+          try {
+            const d = await contract.getDonation(i);
+            const donor = (d[0] || '').toLowerCase();
+            const amount = Number(ethers.utils.formatEther(d[1] || '0')) || 0;
+            const ts = d[2] ? parseInt(d[2].toString ? d[2].toString() : d[2]) : 0;
+            const ngoIndex = (d[3] !== undefined && d[3] !== null) ? parseInt(d[3].toString ? d[3].toString() : d[3]) : null;
+            const note = d[4] || '';
+
+            let ngoAddr = 'unknown';
+            if (ngoIndex !== null && ngoMap[ngoIndex] && ngoMap[ngoIndex].addr) {
+              ngoAddr = ngoMap[ngoIndex].addr;
+            } else if (ngoIndex !== null) {
+              try {
+                const ng = await contract.ngos(ngoIndex);
+                ngoAddr = (ng && ng[0]) ? (ng[0].toLowerCase()) : 'unknown';
+              } catch (e) { ngoAddr = 'unknown'; }
+            }
+
+            byNGO[ngoAddr] = byNGO[ngoAddr] || [];
+            byNGO[ngoAddr].push({ donor, amount, note, ts, idx: i });
+            grand += amount;
+          } catch (e) {
+            console.warn('getDonation error at', i, e);
+          }
+        }
+
+        const ngoKeys = Object.keys(byNGO);
+        if (ngoKeys.length === 0) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td colspan="6">No donations found on-chain.</td>`;
+          tbody.appendChild(tr);
+          totalEl.innerText = '0.000000 ETH';
+          summaryDiv.innerText = 'Admin: No donations found on-chain';
+          return;
+        }
+
+        let overall = 0;
+        for (const ngoAddr of ngoKeys) {
+          const list = byNGO[ngoAddr];
+          let ngoTotal = 0;
+          list.forEach(it => ngoTotal += Number(it.amount || 0));
+          overall += ngoTotal;
+
+          // NGO header row
+          const headerTr = document.createElement('tr');
+          headerTr.style.background = 'rgba(255,255,255,0.02)';
+          headerTr.innerHTML = `<td colspan="6" style="padding:8px;"><strong>NGO: ${escapeHtml(ngoAddr)}</strong> — Total: ${Number(ngoTotal).toFixed(6)} ETH</td>`;
+          tbody.appendChild(headerTr);
+
+          for (const it of list) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td style="word-break:break-all;">${escapeHtml(ngoAddr)}</td>
+                        <td style="word-break:break-all;">${escapeHtml(it.donor)}</td>
+                        <td></td>
+                        <td>${Number(it.amount).toFixed(6)}</td>
+                        <td>${escapeHtml(it.note)}</td>
+                        <td>${it.ts ? new Date(it.ts * 1000).toLocaleString() : ''}</td>`;
+            tbody.appendChild(tr);
+          }
+        }
+
+        totalEl.innerText = Number(overall).toFixed(6) + ' ETH';
+        summaryDiv.innerText = `Admin: All donations across ${ngoKeys.length} NGO(s) — Grand total: ${Number(overall).toFixed(6)} ETH`;
+      } catch (err) {
+        console.error('loadAllDonationsForAdmin error', err);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="6">Error loading donations (see console)</td>`;
+        tbody.appendChild(tr);
+        totalEl.innerText = '-- ETH';
+        summaryDiv.innerText = `Admin: Failed to load donations`;
+      }
+    }
+
+
+
+    // small utility
+    function shortenAddress(addr) {
+      if (!addr) return '';
+      return addr.slice(0, 6) + '...' + addr.slice(-4);
+    }
+
+    /* end detailed dashboard JS */
+    // Withdraw for NGO
+    async function withdraw() {
+      if (!contract) return alert("Connect wallet first");
+      try {
+        const tx = await contract.withdraw();
+        setStatus("Withdraw tx sent, waiting confirmation...");
+        await tx.wait();
+        setStatus("Withdraw successful");
+        await loadNGOs();
+      } catch (err) {
+        console.error(err);
+        setStatus("Withdraw failed: " + (err && err.message));
+      }
+    }
+
+    // Check on-chain balance stored for an NGO (inside contract)
+    async function checkBalance() {
+      const addr = checkNgoAddr.value.trim();
+      if (!addr) return alert("Enter NGO address");
+      try {
+        const bal = await contract.balances(addr);
+        ngoBalance.innerText = `${ethers.utils.formatEther(bal)} ETH (contract-held)`;
+      } catch (err) {
+        console.error(err);
+        setStatus("Check balance failed: " + (err && err.message));
+      }
+    }
+
+    // Wire up UI events
+    connectBtn.onclick = connectWallet;
+    refreshBtn.onclick = async () => { if (contract) { await loadNGOs(); await loadDonations(); } else setStatus("Connect first"); };
+    addNgoBtn.onclick = addNGO;
+    donateBtn.onclick = donate;
+    withdrawBtn.onclick = withdraw;
+    refreshDonationsBtn.onclick = loadDonations;
+    checkBalanceBtn.onclick = checkBalance;
+
+    // micro interaction helper - mark element briefly
+    function markAsNew(el) {
+      if (!el) return;
+      el.classList.add('pulse', 'new');
+      setTimeout(() => el.classList.remove('new'), 1600);
+    }
+
+    window.addEventListener('load', async () => {
+      setStatus("Page loaded. Paste ABI & address in JS and click Connect Wallet.");
+      try { await updateDashboard(); } catch (e) { /* ignore */ }
+    });
+
+
+    // Handle account/network change (MetaMask)
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', (accounts) => {
+        if (accounts.length === 0) {
+          // user disconnected from MetaMask or no accounts available
+          disconnectWallet();
+        } else {
+          // user switched accounts: update address and refresh UI state
+          userAddress = accounts[0];
+          accountSpan.innerText = userAddress;
+          setStatus("Account changed — reloading data for new account");
+          // reload data for the new account
+          (async () => {
+            try {
+              await loadNGOs();
+              await loadDonations();
+            } catch (e) { console.error("Failed to reload after account change", e); }
+          })();
+        }
+      });
+
+      window.ethereum.on('chainChanged', (chainId) => {
+        setStatus("Network changed — reload the page");
+        // window.location.reload();
+      });
+    }
+  </script>
+  <!-- Lottie player -->
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+
+
+  <!-- tsParticles (optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+  <script>
+    if (window.innerWidth > 720 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      tsParticles.load("tsparticles-bg", {
+        fullScreen: { enable: false },
+        detectRetina: true,
+        fpsLimit: 40,
+        particles: {
+          number: { value: 45 },
+          color: { value: ["#06b6d4", "#a78bfa", "#ffb86b"] },
+          shape: { type: "circle" },
+          opacity: { value: 0.12 },
+          size: { value: { min: 1, max: 4 } },
+          move: { enable: true, speed: 0.9, direction: "none", outModes: "out" }
+        },
+        interactivity: { events: { onHover: { enable: false }, onClick: { enable: false } } },
+        background: { color: "transparent" }
+      }).then((container) => { /* container available */ });
+    }
+  </script>
+</body>
+
+</html>
