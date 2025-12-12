@@ -1,9 +1,9 @@
 
-Charity Fund Frontend (Demo)
+PLEDGE (Demo)
 ===========================
 
 Files:
-- index.html : Single-file frontend that connects to MetaMask and your CharityFund contract.
+- index.html : Single-file frontend that connects to MetaMask and PLEDGE contract.
 - This folder is safe to unzip on your machine.
 
 How to use:
@@ -30,5 +30,3 @@ Notes:
 - Make sure MetaMask is on the same test network you deployed the contract to (e.g., Sepolia or Polygon Mumbai).
 - Amounts are processed using ethers.js; small decimals should be entered like "0.01".
 - If you see errors, open browser console (F12) - the page logs helpful messages.
-
-If you want, paste the ABI & address here and I can replace them into the file for you.
